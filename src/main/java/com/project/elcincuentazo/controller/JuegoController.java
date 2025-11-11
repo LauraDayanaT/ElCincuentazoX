@@ -42,7 +42,7 @@ public class JuegoController {
             lblGanador.setText("Ganador: " + juego.getGanador().getNombre());
             deshabilitarInterfaz();
         } else if (jugadorActual.esCPU()) {
-            jugarTurnoCPU(jugadorActual);
+            new Thread(()->jugarTurnoCPU(jugadorActual)).start();
         }
     }
 
@@ -94,11 +94,8 @@ public class JuegoController {
 
     private Carta elegirCartaCPU(Jugador cpu) {
         for (Carta carta : cpu.getMano()) {
-            int nuevaSuma = juego.getSumaMesa() + carta.getValor();
-            if (carta.getSimbolo().startsWith("A")) {
-                if (juego.getSumaMesa() + 10 <= 50) nuevaSuma = juego.getSumaMesa() + 10;
-                else nuevaSuma = juego.getSumaMesa() + 1;
-            }
+            int nuevaSuma = juego.getSumaMesa() + carta.getValorReal(juego.getSumaMesa());
+
             if (nuevaSuma <= 50) return carta;
         }
         return null; // no puede jugar
@@ -109,9 +106,8 @@ public class JuegoController {
     }
 
     private String getRutaCarta(Carta carta) {
-        String[] partes = carta.getSimbolo().split(" ");
-        String palo = partes[2]; // Ejemplo: "Corazones"
-
+        String texto = carta.getSimbolo(); // Ejemplo: "10 de Corazon"
+        String palo = texto.substring(texto.lastIndexOf(" ") + 1); // obtiene "Corazon"
         String ruta = "/com/project/elcincuentazo/" + palo + ".png";
         var recurso = getClass().getResource(ruta);
 
@@ -122,6 +118,7 @@ public class JuegoController {
 
         return recurso.toExternalForm();
     }
+
 
 
     private void mostrarAlerta(String mensaje) {

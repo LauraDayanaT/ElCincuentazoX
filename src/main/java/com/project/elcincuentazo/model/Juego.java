@@ -41,7 +41,7 @@ public class Juego {
     private void iniciarMesa() {
         Carta cartaInicial = mazo.tomarCarta();
         cartasMesa.add(cartaInicial);
-        sumaMesa = cartaInicial.getValor();
+        sumaMesa = cartaInicial.getValorReal(0);
     }
 
     public List<Jugador> getJugadores() {
@@ -89,15 +89,10 @@ public class Juego {
     }
 
     private int calcularNuevaSuma(Carta carta) {
-        int valor = carta.getValor();
-        // Ajuste para el As (puede ser 1 o 10)
-        if (carta.getSimbolo().startsWith("A")) {
-            int sumaCon10 = sumaMesa + 10;
-            if (sumaCon10 <= 50) valor = 10;
-            else valor = 1;
-        }
+        int valor = carta.getValorReal(sumaMesa);
         return sumaMesa + valor;
     }
+
 
     public boolean hayGanador() {
         return jugadores.stream().filter(j -> !j.estaEliminado()).count() == 1;
