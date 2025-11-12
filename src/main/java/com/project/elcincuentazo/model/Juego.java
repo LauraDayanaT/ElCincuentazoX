@@ -21,6 +21,20 @@ public class Juego {
         inicializarJugadores(numCPU);
         repartirCartasIniciales();
         iniciarMesa();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(2000); /* hilo para revisar si el mazo esta vacio**/
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (mazo.estaVacio()) {
+                    reciclarCartasDeMesa();
+                    System.out.println("♻️ Se reciclaron las cartas al mazo automáticamente.");
+                }
+            }
+        }).start();
     }
 
     private void inicializarJugadores(int numCPU) {
@@ -83,9 +97,13 @@ public class Juego {
 
         if (!mazo.estaVacio()) {
             jugador.agregarCarta(mazo.tomarCarta());
+        } else {
+            reciclarCartasDeMesa(); /* devuelve las cartas jugadas al mazo **/
+            jugador.agregarCarta(mazo.tomarCarta());
         }
 
         return true;
+
     }
 
     private int calcularNuevaSuma(Carta carta) {

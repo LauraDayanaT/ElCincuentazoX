@@ -9,7 +9,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/project/elcincuentazo/MenuView1.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/project/elcincuentazo/MenuView.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("El Cincuentazo");

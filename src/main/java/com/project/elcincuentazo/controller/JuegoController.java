@@ -179,24 +179,30 @@ public class JuegoController {
     }
 
     private void jugarTurnoCPU(Jugador cpu) {
-        Platform.runLater(() -> {
+        Thread hiloCPU = new Thread(() -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1000); // Simula "pensar"
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            Carta cartaElegida = elegirCartaCPU(cpu);
-            if (cartaElegida != null) {
-                juego.jugarCarta(cpu, cartaElegida);
-            } else {
-                cpu.eliminar();
-            }
+            Platform.runLater(() -> {
+                Carta cartaElegida = elegirCartaCPU(cpu);
+                if (cartaElegida != null) {
+                    juego.jugarCarta(cpu, cartaElegida);
+                } else {
+                    cpu.eliminar();
+                }
 
-            juego.siguienteTurno();
-            actualizarInterfaz();
+                juego.reciclarCartasDeMesa(); // 🔁 por si el mazo se vacía
+                juego.siguienteTurno();
+                actualizarInterfaz();
+            });
         });
+
+        hiloCPU.start(); /* ejecuta el hilo de manera independiente**/
     }
+
 
     private Carta elegirCartaCPU(Jugador cpu) {
         for (Carta carta : cpu.getMano()) {
