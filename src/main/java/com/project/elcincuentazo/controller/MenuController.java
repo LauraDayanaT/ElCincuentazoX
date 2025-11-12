@@ -1,6 +1,7 @@
 package com.project.elcincuentazo.controller;
 
-import com.project.elcincuentazo.model.Juego;
+import com.project.elcincuentazo.exceptions.MazoVacioException;
+import com.project.elcincuentazo.models.Juego;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +47,8 @@ public class MenuController {
         } catch (IOException e) {
             e.printStackTrace();
             lblMensaje.setText("Error al iniciar el juego.");
+        } catch (MazoVacioException e) {
+            throw new RuntimeException(e);
         }
     }
 }

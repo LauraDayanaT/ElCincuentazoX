@@ -1,8 +1,8 @@
 package com.project.elcincuentazo.controller;
 
-import com.project.elcincuentazo.model.Carta;
-import com.project.elcincuentazo.model.Juego;
-import com.project.elcincuentazo.model.Jugador;
+import com.project.elcincuentazo.models.Carta;
+import com.project.elcincuentazo.models.Juego;
+import com.project.elcincuentazo.models.Jugador;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -18,24 +18,15 @@ import java.net.URL;
 
 public class JuegoController {
 
-    @FXML
-    private Label lblTurno, lblSumaMesa, lblGanador, lblCartaMesa; // 👈 añadimos label para la carta en mesa
+    @FXML private Label lblTurno, lblSumaMesa, lblGanador, lblCartaMesa; // 👈 añadimos label para la carta en mesa
+    @FXML private ImageView imgCartaMesa; // se puede eliminar del FXML si ya no se usará
+    @FXML private HBox contenedorCartasJugador; // humano (abajo)
 
-    @FXML
-    private ImageView imgCartaMesa; // se puede eliminar del FXML si ya no se usará
+    @FXML private HBox contenedorCPU1; // arriba
+    @FXML private VBox contenedorCPU2; // izquierda
+    @FXML private VBox contenedorCPU3; // derecha
 
-    @FXML
-    private HBox contenedorCartasJugador; // humano (abajo)
-
-    @FXML
-    private HBox contenedorCPU1; // arriba
-    @FXML
-    private VBox contenedorCPU2; // izquierda
-    @FXML
-    private VBox contenedorCPU3; // derecha
-
-    @FXML
-    private Label lblCPU1, lblCPU2, lblCPU3;
+    @FXML private Label lblCPU1, lblCPU2, lblCPU3;
 
     private Juego juego;
     private Image imgDorso;
@@ -55,24 +46,28 @@ public class JuegoController {
     }
 
     private void actualizarInterfaz() {
-        Jugador jugadorActual = juego.getJugadorActual();
-        lblTurno.setText("Turno de: " + jugadorActual.getNombre());
         lblSumaMesa.setText("Suma en mesa: " + juego.getSumaMesa());
         lblGanador.setText("");
+
+        if (juego.hayGanador()){
+            lblGanador.setText("Ganador: " + juego.getGanador().getNombre());
+            deshabilitarInterfaz();
+            return;
+        }
+
+        Jugador jugadorActual = juego.getJugadorActual();
+        lblTurno.setText("Turno de: " + jugadorActual.getNombre());
 
         mostrarCartaMesa();
         mostrarCartasJugador();
         mostrarCartasCPU();
 
-        if (juego.hayGanador()) {
-            lblGanador.setText("Ganador: " + juego.getGanador().getNombre());
-            deshabilitarInterfaz();
-        } else if (jugadorActual.esCPU()) {
+        if (jugadorActual.esCPU() && !jugadorActual.estaEliminado()) {
             jugarTurnoCPU(jugadorActual);
         }
+
     }
 
-    // ✅ ahora muestra la carta con texto y emoji, no imagen
     private void mostrarCartaMesa() {
         Carta cartaMesa = juego.getCartasMesa().get(juego.getCartasMesa().size() - 1);
         String simbolo = obtenerSimboloCarta(cartaMesa);
@@ -116,14 +111,13 @@ public class JuegoController {
                     actualizarInterfaz();
                 }
             });
-
             contenedorCartasJugador.getChildren().add(btnCarta);
         }
     }
-    //obtener simbolos
+
     private String obtenerSimboloCarta(Carta carta) {
-        String valor = carta.getSimbolo().split(" ")[0];
-        String palo = carta.getSimbolo().split(" ")[2].toLowerCase();
+        String valor = carta.getSimboloCompleto().split(" ")[0];
+        String palo = carta.getSimboloCompleto().split(" ")[2].toLowerCase();
 
         return switch (palo) {
             case "corazon" -> valor + "♥";
@@ -138,6 +132,7 @@ public class JuegoController {
         contenedorCPU1.getChildren().clear();
         contenedorCPU2.getChildren().clear();
         contenedorCPU3.getChildren().clear();
+
         lblCPU1.setText("");
         lblCPU2.setText("");
         lblCPU3.setText("");
@@ -149,68 +144,61 @@ public class JuegoController {
             switch (i) {
                 case 1 -> {
                     lblCPU1.setText(cpu.getNombre());
-                    for (int j = 0; j < cpu.getMano().size(); j++) {
-                        ImageView cartaDorso = new ImageView(imgDorso);
-                        cartaDorso.setFitWidth(60);
-                        cartaDorso.setFitHeight(80);
-                        contenedorCPU1.getChildren().add(cartaDorso);
-                    }
+                    agregarDorsoCartas(cpu.getMano().size(), contenedorCPU1);
                 }
                 case 2 -> {
                     lblCPU2.setText(cpu.getNombre());
-                    for (int j = 0; j < cpu.getMano().size(); j++) {
-                        ImageView cartaDorso = new ImageView(imgDorso);
-                        cartaDorso.setFitWidth(60);
-                        cartaDorso.setFitHeight(80);
-                        contenedorCPU2.getChildren().add(cartaDorso);
-                    }
+                    agregarDorsoCartas(cpu.getMano().size(), contenedorCPU2);
                 }
                 case 3 -> {
                     lblCPU3.setText(cpu.getNombre());
-                    for (int j = 0; j < cpu.getMano().size(); j++) {
-                        ImageView cartaDorso = new ImageView(imgDorso);
-                        cartaDorso.setFitWidth(60);
-                        cartaDorso.setFitHeight(80);
-                        contenedorCPU3.getChildren().add(cartaDorso);
-                    }
+                    agregarDorsoCartas(cpu.getMano().size(), contenedorCPU3);
                 }
             }
         }
     }
 
+    private void agregarDorsoCartas(int cantidad, javafx.scene.layout.Pane contenedor) {
+        for (int j = 0; j < cantidad; j++) {
+            ImageView cartaDorso = new ImageView(imgDorso);
+            cartaDorso.setFitWidth(60);
+            cartaDorso.setFitHeight(80);
+            contenedor.getChildren().add(cartaDorso);
+        }
+    }
+
     private void jugarTurnoCPU(Jugador cpu) {
-        Thread hiloCPU = new Thread(() -> {
+        new Thread(() -> {
             try {
-                Thread.sleep(1000); // Simula "pensar"
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                int delay = 2000 + (int) (Math.random() * 2000); // 2–4 seg
+                Thread.sleep(delay);
+            } catch (InterruptedException ignored) {}
+
+            Carta cartaElegida = elegirCartaCPU(cpu);
 
             Platform.runLater(() -> {
-                Carta cartaElegida = elegirCartaCPU(cpu);
                 if (cartaElegida != null) {
                     juego.jugarCarta(cpu, cartaElegida);
                 } else {
                     cpu.eliminar();
+                    mostrarAlerta(cpu.getNombre() + " no puede jugar y queda eliminado.");
                 }
 
-                juego.reciclarCartasDeMesa(); // 🔁 por si el mazo se vacía
-                juego.siguienteTurno();
-                actualizarInterfaz();
+                if (juego.hayGanador()) {
+                    lblGanador.setText("Ganador: " + juego.getGanador().getNombre());
+                    deshabilitarInterfaz();
+                } else {
+                    juego.siguienteTurno();
+                    actualizarInterfaz();
+                }
             });
-        });
-
-        hiloCPU.start(); /* ejecuta el hilo de manera independiente**/
+        }).start();
     }
 
 
     private Carta elegirCartaCPU(Jugador cpu) {
         for (Carta carta : cpu.getMano()) {
-            int nuevaSuma = juego.getSumaMesa() + carta.getValor();
-            if (carta.getSimbolo().startsWith("A")) {
-                if (juego.getSumaMesa() + 10 <= 50) nuevaSuma = juego.getSumaMesa() + 10;
-                else nuevaSuma = juego.getSumaMesa() + 1;
-            }
+            int nuevaSuma = juego.getSumaMesa() + carta.getValorReal(juego.getSumaMesa());
             if (nuevaSuma <= 50) return carta;
         }
         return null;
