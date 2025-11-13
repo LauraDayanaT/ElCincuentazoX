@@ -1,7 +1,6 @@
 package com.project.elcincuentazo.models;
 
 import com.project.elcincuentazo.interfaces.IASeleccionCarta;
-
 import java.util.Optional;
 
 public class CPU extends Jugador {

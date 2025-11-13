@@ -24,7 +24,7 @@ public class MenuController {
     private Label lblMensaje;
 
     @FXML
-    private Button btnIniciarJuego; // 🔹 asegúrate de tener fx:id="btnIniciarJuego" en el FXML
+    private Button btnIniciarJuego;
 
     @FXML
     public void initialize() {

@@ -13,8 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Objects;
 
 public class JuegoController {
 
@@ -216,6 +218,9 @@ public class JuegoController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new javafx.scene.image.Image(
+                Objects.requireNonNull(getClass().getResource("/com/project/elcincuentazo/exclamacion.png")).toExternalForm()));
         alert.showAndWait();
     }
 }

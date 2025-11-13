@@ -14,7 +14,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/project/elcincuentazo/MenuView.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("El Cincuentazo");
+        stage.setTitle("Cincuentazo");
         stage.setScene(scene);
         stage.getIcons().add(new javafx.scene.image.Image(
                 Objects.requireNonNull(getClass().getResource("/com/project/elcincuentazo/logo.png")).toExternalForm()));
