@@ -35,7 +35,7 @@ public class JuegoController {
         this.juego = juego;
 
         // Cargar dorso desde resources
-        URL recurso = getClass().getResource("/com/project/elcincuentazo/Dorso.png");
+        URL recurso = getClass().getResource("/com/project/elcincuentazo/imgDorso.png");
         if (recurso != null) {
             imgDorso = new Image(recurso.toExternalForm());
         } else {
@@ -73,7 +73,8 @@ public class JuegoController {
         String simbolo = obtenerSimboloCarta(cartaMesa);
 
         lblCartaMesa.setText(simbolo);
-        lblCartaMesa.setFont(Font.font("Segoe UI Emoji", FontWeight.BOLD, 64));
+        lblCartaMesa.setFont(Font.font("Segoe UI Emoji", FontWeight.BOLD, 32));
+        lblCartaMesa.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #cccccc; -fx-border-radius: 12; -fx-border-width: 2;");
 
         if (simbolo.contains("♥") || simbolo.contains("♦")) {
             lblCartaMesa.setTextFill(Color.RED);
@@ -81,6 +82,9 @@ public class JuegoController {
             lblCartaMesa.setTextFill(Color.BLACK);
         }
     }
+
+
+
 
     private void mostrarCartasJugador() {
         contenedorCartasJugador.getChildren().clear();

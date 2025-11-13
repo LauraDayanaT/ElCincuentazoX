@@ -1,43 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: linear-gradient(to bottom, #243B55, #141E30);" styleClass="border" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.elcincuentazo.controller.MenuController">
-   <center>
-      <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-               <children>
-                  <Label fx:id="lblCantidad" style="-fx-font-size: 16; -fx-text-fill: white; -fx-font-weight: bold;" text="Selecciona número de jugadores CPU:" />
-                  <ChoiceBox fx:id="choiceNumCPU" prefWidth="150.0" />
-                   <Button fx:id="botonIniciar" onAction="#onIniciarJuego" style="-fx-font-size: 16; -fx-background-color: #588100; -fx-text-fill: white; -fx-font-weight: bold;" text="Iniciar Juego" />
-               </children>
-            </VBox>
-         </children>
-      </VBox>
-   </center>
-   <top>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fx:id="imgLogo1" fitHeight="40.0" fitWidth="60.0">
-               <image>
-                   <Image url="@logo1.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="lblTitulo1" style="-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: white;" text="El Cincuentazo" />
-            <ImageView fx:id="imgLogo2" fitHeight="40.0" fitWidth="60.0">
-               <image>
-                   <Image url="@logo2.png" />
-               </image>
-            </ImageView>
-         </children>
-      </HBox>
-   </top>
-</BorderPane>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.project.elcincuentazo.controller.MenuController"
+           prefWidth="600" prefHeight="400">
+
+    <!-- Fondo azul degradado -->
+    <VBox style="-fx-background-color: linear-gradient(to bottom, #243B55, #183091);"
+          prefWidth="600" prefHeight="400"/>
+
+    <!-- Imagen PNG transparente encima del fondo -->
+    <ImageView fitWidth="600" fitHeight="400"  >
+        <image>
+            <Image url="@fondo .png"/>
+        </image>
+    </ImageView>
+
+    <!-- Contenido principal -->
+    <VBox alignment="CENTER"
+          spacing="20"
+          style="-fx-padding: 40;">
+        <Label text="EL CINCUENTAZO"
+               style="
+           -fx-font-size: 32px;
+           -fx-font-weight: bold;
+           -fx-text-fill: linear-gradient(to bottom, #FFD700, #FFB300, #FFA000, #FF8F00);
+           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 6, 0.6, 0, 2);
+           -fx-font-family: 'Arial Black';
+       "/>
+
+
+        <Label text="Selecciona número de jugadores CPU:"
+               style="
+           -fx-font-size: 18px;
+           -fx-text-fill: linear-gradient(to bottom, #FFF59D, #FFC107, #FFB300);
+           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 4, 0.5, 0, 1);
+       "/>
+
+
+        <ChoiceBox fx:id="choiceNumCPU" prefWidth="100"/>
+
+        <Button fx:id="btnIniciarJuego"
+                text="Iniciar Juego"
+                onAction="#onIniciarJuego"
+                onMouseEntered="#hoverBoton"
+                onMouseExited="#salirHoverBoton"
+                style="-fx-font-size: 13px;
+               -fx-font-weight: bold;
+               -fx-text-fill: white;
+               -fx-background-radius: 10;
+               -fx-border-radius: 10;
+               -fx-border-color: #1e8449;
+               -fx-border-width: 1.5;
+               -fx-padding: 6 18 6 18;
+               -fx-cursor: hand;
+               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 4, 0.3, 0, 2);
+               -fx-background-color: linear-gradient(to bottom, #2ecc71, #27ae60);"/>
+
+
+
+        <Label fx:id="lblMensaje" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+    </VBox>
+
+</StackPane>
