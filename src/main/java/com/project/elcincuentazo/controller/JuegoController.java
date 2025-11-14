@@ -128,7 +128,7 @@ public class JuegoController {
             );
 
             aplicarEfectoHover(btnCarta);
-
+            /* hilo del jugador humano **/
             btnCarta.setOnAction(e -> {
                 if (juego.getJugadorActual() != jugador) return;
 

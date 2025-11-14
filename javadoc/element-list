@@ -1,0 +1,6 @@
+module:com.project.elcincuentazo
+com.project.elcincuentazo
+com.project.elcincuentazo.controller
+com.project.elcincuentazo.exceptions
+com.project.elcincuentazo.interfaces
+com.project.elcincuentazo.models
