@@ -83,7 +83,7 @@ public class Juego {
         int valor = carta.getValorReal(sumaMesa);
         int nuevoTotal = sumaMesa + valor;
 
-        if (nuevoTotal > 50) {
+        if (nuevoTotal >= 50) {
             enviarCartasAlMazo(jugador);
             jugador.eliminar();
             return false;

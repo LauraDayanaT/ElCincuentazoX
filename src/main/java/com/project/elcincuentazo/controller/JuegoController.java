@@ -14,6 +14,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import java.net.URL;
 
 import java.net.URL;
 import java.util.Objects;
@@ -63,11 +71,18 @@ public class JuegoController {
         mostrarCartaMesa();
         mostrarCartasJugador();
         mostrarCartasCPU();
+        actualizarInteractividadJugador();
 
         if (jugadorActual.esCPU() && !jugadorActual.estaEliminado()) {
             jugarTurnoCPU(jugadorActual);
         }
 
+    }
+
+    private void actualizarInteractividadJugador() {
+        Jugador jugadorActual = juego.getJugadorActual();
+        Jugador humano = juego.getJugadores().get(0);
+        contenedorCartasJugador.setDisable(jugadorActual != humano || humano.estaEliminado());
     }
 
     private void mostrarCartaMesa() {
@@ -90,7 +105,8 @@ public class JuegoController {
 
     private void mostrarCartasJugador() {
         contenedorCartasJugador.getChildren().clear();
-        Jugador jugador = juego.getJugadores().get(0); // humano
+
+        Jugador jugador = juego.getJugadores().get(0);
 
         for (Carta carta : jugador.getMano()) {
             String simbolo = obtenerSimboloCarta(carta);
@@ -98,27 +114,79 @@ public class JuegoController {
             Button btnCarta = new Button(simbolo);
             btnCarta.setPrefSize(96, 126);
             btnCarta.setFont(Font.font("Segoe UI Emoji", FontWeight.BOLD, 24));
-            btnCarta.setStyle("-fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #cccccc; -fx-border-width: 2; -fx-background-color: white;");
+            btnCarta.setStyle(
+                    "-fx-background-radius: 15; -fx-border-radius: 15;" +
+                            "-fx-border-color: #cccccc; -fx-border-width: 2;" +
+                            "-fx-background-color: white;"
+            );
 
+            btnCarta.setTextFill(simbolo.contains("♥") || simbolo.contains("♦") ? Color.RED : Color.BLACK);
+            btnCarta.setOpacity(1.0);
 
-            if (simbolo.contains("♥") || simbolo.contains("♦")) {
-                btnCarta.setTextFill(Color.RED);
-            } else {
-                btnCarta.setTextFill(Color.BLACK);
-            }
+            contenedorCartasJugador.disableProperty().addListener((obs, oldVal, newVal) ->
+                    btnCarta.setOpacity(1.0)
+            );
+
+            aplicarEfectoHover(btnCarta);
 
             btnCarta.setOnAction(e -> {
+                if (juego.getJugadorActual() != jugador) return;
+
                 if (juego.jugarCarta(jugador, carta)) {
                     juego.siguienteTurno();
-                    actualizarInterfaz();
                 } else {
                     mostrarAlerta("Has excedido 50 y quedas eliminado.");
                     juego.siguienteTurno();
-                    actualizarInterfaz();
                 }
+                actualizarInterfaz();
             });
+
             contenedorCartasJugador.getChildren().add(btnCarta);
         }
+    }
+
+
+    // ============================================================
+    // ⭐ EFECTO HOVER: BRILLO + PULSO SOLO EN TURNO DEL JUGADOR
+    // ============================================================
+    private void aplicarEfectoHover(Button btn) {
+
+        DropShadow sombra = new DropShadow();
+        sombra.setColor(Color.GOLD);
+        sombra.setRadius(25);
+        sombra.setSpread(0.5);
+
+        Timeline pulso = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(sombra.radiusProperty(), 20),
+                        new KeyValue(sombra.spreadProperty(), 0.3),
+                        new KeyValue(btn.scaleXProperty(), 1.05),
+                        new KeyValue(btn.scaleYProperty(), 1.05)
+                ),
+                new KeyFrame(Duration.seconds(0.6),
+                        new KeyValue(sombra.radiusProperty(), 28),
+                        new KeyValue(sombra.spreadProperty(), 0.55),
+                        new KeyValue(btn.scaleXProperty(), 1.10),
+                        new KeyValue(btn.scaleYProperty(), 1.10)
+                )
+        );
+
+        pulso.setAutoReverse(true);
+        pulso.setCycleCount(Animation.INDEFINITE);
+
+        btn.setOnMouseEntered(e -> {
+            if (!contenedorCartasJugador.isDisable()) { // Solo en tu turno
+                btn.setEffect(sombra);
+                pulso.play();
+            }
+        });
+
+        btn.setOnMouseExited(e -> {
+            pulso.stop();
+            btn.setEffect(null);
+            btn.setScaleX(1.0);
+            btn.setScaleY(1.0);
+        });
     }
 
     private String obtenerSimboloCarta(Carta carta) {
