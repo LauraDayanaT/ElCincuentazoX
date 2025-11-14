@@ -132,14 +132,24 @@ public class JuegoController {
             btnCarta.setOnAction(e -> {
                 if (juego.getJugadorActual() != jugador) return;
 
-                if (juego.jugarCarta(jugador, carta)) {
-                    juego.siguienteTurno();
-                } else {
-                    mostrarAlerta("Has excedido 50 y quedas eliminado.");
-                    juego.siguienteTurno();
-                }
-                actualizarInterfaz();
+                boolean jugadaValida = juego.jugarCarta(jugador, carta);
+
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(700); // ⏳ pequeña pausa para suavizar la animación
+                    } catch (InterruptedException ignored) {}
+
+                    Platform.runLater(() -> {
+                        if (!jugadaValida) {
+                            mostrarAlerta("Has excedido 50 y quedas eliminado.");
+                        }
+
+                        juego.siguienteTurno();
+                        actualizarInterfaz();
+                    });
+                }).start();
             });
+
 
             contenedorCartasJugador.getChildren().add(btnCarta);
         }
