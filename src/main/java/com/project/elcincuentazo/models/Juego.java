@@ -62,9 +62,9 @@ public class Juego {
             }
         }
     }
+
     /**
      * Coloca la primera carta en la mesa e inicializa la suma.
-     *
      * @throws MazoVacioException si no hay cartas para iniciar.
      */
     private void iniciarMesa() throws MazoVacioException {
@@ -73,27 +73,31 @@ public class Juego {
         sumaMesa = cartaInicial.getValorReal(0);
     }
 
-    // === GETTERS ===
     /** @return jugador cuyo turno está activo. */
     public Jugador getJugadorActual() {
         return jugadores.get(turnoActual);
     }
+
     /** @return lista completa de jugadores. */
     public List<Jugador> getJugadores() {
         return jugadores;
     }
+
     /** @return cartas actualmente en la mesa. */
     public List<Carta> getCartasMesa() {
         return cartasMesa;
     }
+
     /** @return suma actual de la mesa. */
     public int getSumaMesa() {
         return sumaMesa;
     }
+
     /** @return mazo del juego. */
     public Mazo getMazo() {
         return mazo;
     }
+
     /**
      * Avanza al siguiente turno, saltando jugadores eliminados.
      */
@@ -102,6 +106,7 @@ public class Juego {
             turnoActual = (turnoActual + 1) % jugadores.size();
         } while (jugadores.get(turnoActual).estaEliminado());
     }
+
     /**
      * Envía todas las cartas del jugador al mazo.
      *
@@ -112,6 +117,7 @@ public class Juego {
         jugador.limpiarMano();
         mazo.agregarCartasAlFinal(cartas);
     }
+
     /**
      * Procesa la jugada de un jugador.
      *
@@ -123,7 +129,7 @@ public class Juego {
         int valor = carta.getValorReal(sumaMesa);
         int nuevoTotal = sumaMesa + valor;
 
-        if (nuevoTotal >= 50) {
+        if (nuevoTotal > 50) {
             enviarCartasAlMazo(jugador);
             jugador.eliminar();
             return false;
@@ -144,6 +150,7 @@ public class Juego {
         }
         return true;
     }
+
     /**
      * Recicla todas las cartas de la mesa excepto la última.
      */
@@ -155,12 +162,14 @@ public class Juego {
             mazo.agregarCartasAlFinal(recicladas);
         }
     }
+
     /**
      * @return true si solo queda un jugador activo.
      */
     public boolean hayGanador() {
         return getJugadoresActivos().size() == 1;
     }
+
     /**
      * @return jugador ganador o null si aún no hay uno.
      */
@@ -168,6 +177,7 @@ public class Juego {
         List<Jugador> activos = getJugadoresActivos();
         return activos.size() == 1 ? activos.get(0) : null;
     }
+
     /**
      * Obtiene la lista de jugadores que siguen en la partida.
      *
@@ -180,6 +190,7 @@ public class Juego {
         }
         return activos;
     }
+
     /**
      * Determina si un jugador puede realizar alguna jugada válida.
      *

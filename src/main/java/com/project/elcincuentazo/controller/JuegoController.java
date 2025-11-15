@@ -136,7 +136,7 @@ public class JuegoController {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(700); // ⏳ pequeña pausa para suavizar la animación
+                        Thread.sleep(1); // ⏳ pequeña pausa para suavizar la animación
                     } catch (InterruptedException ignored) {}
 
                     Platform.runLater(() -> {
@@ -155,10 +155,6 @@ public class JuegoController {
         }
     }
 
-
-    // ============================================================
-    // ⭐ EFECTO HOVER: BRILLO + PULSO SOLO EN TURNO DEL JUGADOR
-    // ============================================================
     private void aplicarEfectoHover(Button btn) {
 
         DropShadow sombra = new DropShadow();
@@ -296,9 +292,7 @@ public class JuegoController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new javafx.scene.image.Image(
-                Objects.requireNonNull(getClass().getResource("/com/project/elcincuentazo/exclamacion.png")).toExternalForm()));
         alert.showAndWait();
     }
+
 }
